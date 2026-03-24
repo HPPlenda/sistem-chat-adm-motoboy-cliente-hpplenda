@@ -18,14 +18,16 @@
             --gray-800: #1f2937;
             --gray-900: #111827;
         }
-    
+   
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
             font-family: 'Poppins', sans-serif;
+            /* DESATIVAÇÃO DO QUADRO AZUL NO MOBILE (todas as mudanças feitas aqui) */
+            -webkit-tap-highlight-color: transparent;
         }
-    
+   
         body {
             background-color: var(--gray-100);
             color: var(--black);
@@ -47,7 +49,7 @@
             left: 0;
             top: 0;
         }
-    
+   
         .sidebar-header {
             height: 60px;
             padding: 0 20px;
@@ -60,7 +62,7 @@
             align-items: center;
             gap: 10px;
         }
-    
+   
         .nav-links {
             flex: 1;
             padding: 20px 10px;
@@ -69,7 +71,7 @@
             gap: 10px;
             overflow-y: auto;
         }
-    
+   
         .nav-btn {
             background: none;
             border: none;
@@ -81,24 +83,24 @@
             border-radius: 8px;
             transition: 0.2s;
         }
-    
+   
         .nav-btn:hover {
             background-color: var(--gray-800);
             color: var(--white);
         }
-    
+   
         .nav-btn.active {
             background-color: var(--white);
             color: var(--black);
             font-weight: bold;
         }
-    
+   
         .user-info {
             padding: 20px;
             border-top: 1px solid var(--gray-800);
             background-color: var(--gray-900);
         }
-    
+   
         .user-info p { margin-bottom: 5px; font-size: 14px; }
         .user-name { font-weight: bold; color: var(--white); }
         .user-vehicle { color: var(--gray-500); font-size: 12px; }
@@ -110,7 +112,7 @@
             transition: margin 0.3s ease;
             width: 100%;
         }
-    
+   
         .header {
             height: 60px;
             background-color: var(--white);
@@ -122,7 +124,7 @@
             position: relative;
             z-index: 50;
         }
-    
+   
         /* NOVO: Wrapper para alinhar título + botão de modos com as caixas de entregas no desktop */
         .header-wrapper {
             flex: 1;
@@ -131,18 +133,18 @@
             max-width: 800px;
             margin: 0 auto;
         }
-    
+   
         .page-title {
             font-size: 20px;
             font-weight: bold;
         }
-    
+   
         .content-area {
             padding: 20px;
             overflow-y: auto;
             flex: 1;
         }
-    
+   
         .container {
             max-width: 800px;
             margin: 0 auto;
@@ -160,7 +162,7 @@
             z-index: 50;
             margin-right: 15px;
         }
-    
+   
         .hamburger span {
             display: block;
             height: 3px;
@@ -169,7 +171,7 @@
             border-radius: 3px;
             transition: all 0.3s ease;
         }
-    
+   
         .hamburger.open span { background-color: var(--black); }
         .hamburger.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
         .hamburger.open span:nth-child(2) { opacity: 0; }
@@ -194,19 +196,19 @@
             margin-bottom: 15px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
-    
+   
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 10px;
         }
-    
+   
         .card-title {
             font-size: 18px;
             font-weight: bold;
         }
-    
+   
         .reward {
             background: var(--black);
             color: var(--white);
@@ -216,7 +218,7 @@
             font-weight: bold;
             white-space: nowrap;
         }
-    
+   
         .address {
             color: var(--gray-500);
             font-size: 14px;
@@ -225,7 +227,7 @@
             display: flex;
             align-items: center;
         }
-    
+   
         .btn {
             width: 100%;
             padding: 12px;
@@ -236,7 +238,7 @@
             cursor: pointer;
             transition: 0.2s;
         }
-    
+   
         .btn-black { background: var(--black); color: var(--white); }
         .btn-black:hover { background: var(--gray-800); }
         .btn-gray { background: var(--gray-200); color: var(--gray-500); cursor: not-allowed; }
@@ -278,8 +280,8 @@
         }
         /* Responsividade (Celular) */
         @media (max-width: 768px) {
-            .sidebar { 
-                transform: translateX(-100%); 
+            .sidebar {
+                transform: translateX(-100%);
                 /* NOVO: Sidebar começa ABAIXO do header para o botão de modos ficar SEMPRE visível acima da barra lateral */
                 top: 60px;
                 height: calc(100vh - 60px);
@@ -311,12 +313,12 @@
             margin-left: auto;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-    
+   
         .mode-btn:hover {
             transform: scale(1.12);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
         }
-    
+   
         .mode-btn svg {
             width: 28px;
             height: 28px;
@@ -332,7 +334,7 @@
             --gray-800: #4b5563;
             --gray-900: #1f2937;
         }
-    
+   
         html[data-theme="gray"] {
             --black: #ffffff;
             --white: #808080;
@@ -453,16 +455,16 @@
                 <span></span>
                 <span></span>
             </button>
-            
+           
             <!-- Wrapper para manter o botão de modos alinhado com as caixas de entregas no desktop -->
             <div class="header-wrapper">
                 <div class="page-title" id="page-title">Entregas Disponíveis</div>
-             
+            
                 <!-- BOTÃO DE MODOS (mantido exatamente onde estava, sempre visível e alinhado à direita) -->
                 <button id="mode-btn" class="mode-btn"></button>
             </div>
         </header>
-    
+   
         <div class="content-area">
             <div class="container" id="content-container">
                 <!-- O conteúdo será injetado aqui via JavaScript -->
@@ -523,7 +525,7 @@
             // Atualiza botões ativos
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById('btn-' + tab).classList.add('active');
-        
+       
             // Fecha o menu no celular ao clicar
             if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
                 toggleMenu();
@@ -543,7 +545,7 @@
         // --- FUNÇÕES DE RENDERIZAÇÃO ---
         function renderAvailable() {
             const pending = deliveries.filter(d => d.status === 'pending');
-        
+       
             if (pending.length === 0) {
                 contentContainer.innerHTML = `
                     <div class="card empty-state">
@@ -584,7 +586,7 @@
                 return;
             }
             const myDel = deliveries.filter(d => d.motoboyId === currentMotoboy.id);
-        
+       
             if (myDel.length === 0) {
                 contentContainer.innerHTML = `
                     <div class="card empty-state">
@@ -655,7 +657,7 @@
                 phone,
                 vehicle
             };
-        
+       
             // Atualiza a interface lateral
             displayName.innerText = name;
             displayVehicle.innerText = vehicle;
@@ -668,7 +670,7 @@
                 switchTab('register');
                 return;
             }
-        
+       
             const delivery = deliveries.find(d => d.id === id);
             if (delivery) {
                 delivery.status = 'accepted';
