@@ -357,6 +357,13 @@
             background-color: #374151; /* cinza escuro (como pedido) */
             color: #ffffff;
         }
+        /* NOVO: Apenas o modo escuro foi alterado conforme solicitado */
+        /* Aba ativa (nav-btn.active) agora fica cinza escuro no modo escuro */
+        /* (modo claro continua branco como já estava, modo cinza continua cinza como já estava) */
+        html[data-theme="dark"] .nav-btn.active {
+            background-color: #374151; /* cinza escuro */
+            color: #ffffff;
+        }
         /* MODO CINZA */
         html[data-theme="gray"] .sidebar {
             background-color: #595959;
