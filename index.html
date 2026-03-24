@@ -16,14 +16,14 @@
             --gray-800: #1f2937;
             --gray-900: #111827;
         }
-       
+     
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-       
+     
         body {
             background-color: var(--gray-100);
             color: var(--black);
@@ -45,7 +45,7 @@
             left: 0;
             top: 0;
         }
-       
+     
         .sidebar-header {
             height: 60px;
             padding: 0 20px;
@@ -58,7 +58,7 @@
             align-items: center;
             gap: 10px;
         }
-       
+     
         .nav-links {
             flex: 1;
             padding: 20px 10px;
@@ -67,7 +67,7 @@
             gap: 10px;
             overflow-y: auto;
         }
-       
+     
         .nav-btn {
             background: none;
             border: none;
@@ -79,24 +79,24 @@
             border-radius: 8px;
             transition: 0.2s;
         }
-       
+     
         .nav-btn:hover {
             background-color: var(--gray-800);
             color: var(--white);
         }
-       
+     
         .nav-btn.active {
             background-color: var(--white);
             color: var(--black);
             font-weight: bold;
         }
-       
+     
         .user-info {
             padding: 20px;
             border-top: 1px solid var(--gray-800);
             background-color: var(--gray-900);
         }
-       
+     
         .user-info p { margin-bottom: 5px; font-size: 14px; }
         .user-name { font-weight: bold; color: var(--white); }
         .user-vehicle { color: var(--gray-500); font-size: 12px; }
@@ -108,7 +108,7 @@
             transition: margin 0.3s ease;
             width: 100%;
         }
-       
+     
         .header {
             height: 60px;
             background-color: var(--white);
@@ -117,18 +117,18 @@
             align-items: center;
             padding: 0 20px;
         }
-       
+     
         .page-title {
             font-size: 20px;
             font-weight: bold;
         }
-       
+     
         .content-area {
             padding: 20px;
             overflow-y: auto;
             flex: 1;
         }
-       
+     
         .container {
             max-width: 800px;
             margin: 0 auto;
@@ -146,7 +146,7 @@
             z-index: 50;
             margin-right: 15px;
         }
-       
+     
         .hamburger span {
             display: block;
             height: 3px;
@@ -155,8 +155,8 @@
             border-radius: 3px;
             transition: all 0.3s ease;
         }
-       
-        .hamburger.open span { background-color: var(--white); }
+     
+        .hamburger.open span { background-color: var(--black); }
         .hamburger.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
         .hamburger.open span:nth-child(2) { opacity: 0; }
         .hamburger.open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
@@ -180,19 +180,19 @@
             margin-bottom: 15px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
-       
+     
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 10px;
         }
-       
+     
         .card-title {
             font-size: 18px;
             font-weight: bold;
         }
-       
+     
         .reward {
             background: var(--black);
             color: var(--white);
@@ -202,14 +202,16 @@
             font-weight: bold;
             white-space: nowrap;
         }
-       
+     
         .address {
             color: var(--gray-500);
             font-size: 14px;
             margin-bottom: 15px;
             line-height: 1.4;
+            display: flex;
+            align-items: center;
         }
-       
+     
         .btn {
             width: 100%;
             padding: 12px;
@@ -220,7 +222,7 @@
             cursor: pointer;
             transition: 0.2s;
         }
-       
+     
         .btn-black { background: var(--black); color: var(--white); }
         .btn-black:hover { background: var(--gray-800); }
         .btn-gray { background: var(--gray-200); color: var(--gray-500); cursor: not-allowed; }
@@ -239,6 +241,10 @@
             border-radius: 6px;
             font-size: 16px;
             background-color: var(--gray-100);
+            color: var(--black); /* Garante que o texto digitado/placholder sempre use a cor principal do tema */
+        }
+        .form-group input::placeholder {
+            color: var(--gray-500);
         }
         .form-group input:focus {
             outline: none;
@@ -270,7 +276,6 @@
                 grid-template-columns: 1fr 1fr;
             }
         }
-
         /* ==================== NOVO: BOTÃO DE MODOS (CLARO / ESCURO / CINZA) ==================== */
         .mode-btn {
             width: 42px;
@@ -287,29 +292,28 @@
             margin-left: auto;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-       
+     
         .mode-btn:hover {
             transform: scale(1.12);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
         }
-       
+     
         .mode-btn svg {
             width: 28px;
             height: 28px;
         }
-
         /* Temas (apenas redefinição de variáveis + overrides mínimos para sidebar, botões e reward) */
         html[data-theme="dark"] {
             --black: #ffffff;
-            --white: #111827;
-            --gray-100: #111827;
+            --white: #000000; /* Totalmente preto no modo escuro */
+            --gray-100: #000000; /* Totalmente preto no modo escuro */
             --gray-200: #1f2937;
             --gray-300: #374151;
             --gray-500: #9ca3af;
             --gray-800: #4b5563;
             --gray-900: #1f2937;
         }
-       
+     
         html[data-theme="gray"] {
             --black: #ffffff;
             --white: #808080;
@@ -320,26 +324,74 @@
             --gray-800: #696969;
             --gray-900: #595959;
         }
-
         /* Overrides necessários para manter contraste em sidebar, reward e botões */
+        /* MODO ESCURO */
         html[data-theme="dark"] .sidebar {
             background-color: #000000;
             color: #ffffff;
         }
+        html[data-theme="dark"] .reward {
+            background-color: #374151;
+            color: #ffffff;
+        }
+        html[data-theme="dark"] .btn-black {
+            background-color: #374151; /* cinza escuro (como pedido) */
+            color: #ffffff;
+        }
+        /* MODO CINZA */
         html[data-theme="gray"] .sidebar {
             background-color: #595959;
             color: #ffffff;
         }
-        html[data-theme="dark"] .reward,
-        html[data-theme="dark"] .btn-black {
-            background-color: #000000;
+        html[data-theme="gray"] .reward {
+            background-color: #595959;
             color: #ffffff;
         }
-        html[data-theme="gray"] .reward,
         html[data-theme="gray"] .btn-black {
-            background-color: #000000;
+            background-color: #595959; /* cinza um pouco mais escuro (como pedido) */
             color: #ffffff;
         }
+        html[data-theme="gray"] .form-group label {
+            color: #ffffff; /* labels brancas (Nome Completo, Telefone, Placa) */
+        }
+        html[data-theme="gray"] .form-group input::placeholder {
+            color: #ffffff; /* texto dos inputs e placeholders brancos */
+        }
+        /* MODO BRANCO (light) */
+        html[data-theme="light"] .sidebar {
+            background-color: var(--gray-200); /* cinza claro */
+            color: var(--black);
+        }
+        html[data-theme="light"] .btn-black {
+            background-color: var(--gray-200); /* cinza claro */
+            color: var(--black);
+        }
+        /* ====================== NOVAS CORREÇÕES SOLICITADAS ====================== */
+        /* 1. Modo claro: TODAS as fontes da sidebar agora são preto (nav, user-info, etc) */
+        html[data-theme="light"] .nav-btn {
+            color: var(--black);
+        }
+        html[data-theme="light"] .nav-btn:hover {
+            background-color: var(--gray-300);
+            color: var(--black);
+        }
+        html[data-theme="light"] .user-info {
+            background-color: var(--gray-200);
+            border-top: 1px solid var(--gray-300);
+        }
+        html[data-theme="light"] .user-name {
+            color: var(--black);
+        }
+        html[data-theme="light"] .user-vehicle {
+            color: var(--black);
+        }
+        /* 2. Reward (preço) conforme solicitado */
+        html[data-theme="light"] .reward {
+            background-color: var(--gray-500);
+            color: var(--white);
+        }
+        /* 3. Hamburger X agora respeita o tema (preto no claro, branco no escuro/cinza) */
+        /* (já aplicado acima no .hamburger.open span) */
     </style>
 </head>
 <body>
@@ -376,11 +428,11 @@
                 <span></span>
             </button>
             <div class="page-title" id="page-title">Entregas Disponíveis</div>
-            
-            <!-- NOVO BOTÃO DE MODOS (posicionado exatamente onde você marcou nas imagens) -->
+          
+            <!-- BOTÃO DE MODOS (mantido exatamente onde estava, sempre visível e alinhado à direita) -->
             <button id="mode-btn" class="mode-btn"></button>
         </header>
-       
+     
         <div class="content-area">
             <div class="container" id="content-container">
                 <!-- O conteúdo será injetado aqui via JavaScript -->
@@ -397,7 +449,6 @@
             { id: '4', product: 'Livros Didáticos', address: 'Av. Paulista, 1578', status: 'pending', reward: 12.00 },
             { id: '5', product: 'Equipamento Fotográfico', address: 'Rua Augusta, 100', status: 'pending', reward: 45.00 }
         ];
-
         // NOVO: Estado do tema (3 modos exatamente como você pediu)
         let currentThemeIndex = 0;
         const themes = [
@@ -414,7 +465,6 @@
                 icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H6.5a5 5 0 0 1-1-9.9 5 5 0 0 1 9.78-1.78 5 5 0 0 1 3.72 8.68z"></path></svg>`
             }
         ];
-
         // --- ELEMENTOS DO DOM ---
         const sidebar = document.getElementById('sidebar');
         const hamburger = document.getElementById('hamburger');
@@ -423,8 +473,7 @@
         const pageTitle = document.getElementById('page-title');
         const displayName = document.getElementById('display-name');
         const displayVehicle = document.getElementById('display-vehicle');
-        const modeBtn = document.getElementById('mode-btn');   // NOVO botão de modos
-
+        const modeBtn = document.getElementById('mode-btn'); // NOVO botão de modos
         // --- LÓGICA DO MENU HAMBÚRGUER ---
         function toggleMenu() {
             sidebar.classList.toggle('open');
@@ -433,20 +482,18 @@
         }
         // Fechar menu ao clicar fora (no overlay)
         overlay.addEventListener('click', toggleMenu);
-
         // NOVO: Função que aplica o tema (muda data-theme e ícone do botão)
         function applyTheme() {
             const theme = themes[currentThemeIndex];
             document.documentElement.setAttribute('data-theme', theme.name);
             modeBtn.innerHTML = theme.icon;
         }
-
         // --- NAVEGAÇÃO DE ABAS ---
         function switchTab(tab) {
             // Atualiza botões ativos
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById('btn-' + tab).classList.add('active');
-           
+         
             // Fecha o menu no celular ao clicar
             if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
                 toggleMenu();
@@ -463,11 +510,10 @@
                 renderRegister();
             }
         }
-
         // --- FUNÇÕES DE RENDERIZAÇÃO ---
         function renderAvailable() {
             const pending = deliveries.filter(d => d.status === 'pending');
-           
+         
             if (pending.length === 0) {
                 contentContainer.innerHTML = `
                     <div class="card empty-state">
@@ -483,7 +529,13 @@
                             <div class="card-title">${d.product}</div>
                             <div class="reward">R$ ${d.reward.toFixed(2)}</div>
                         </div>
-                        <div class="address">📍 ${d.address}</div>
+                        <div class="address">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px; vertical-align: middle;">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            ${d.address}
+                        </div>
                         <button class="btn btn-black" onclick="acceptDelivery('${d.id}')">Aceitar Entrega</button>
                     </div>
                 `;
@@ -502,7 +554,7 @@
                 return;
             }
             const myDel = deliveries.filter(d => d.motoboyId === currentMotoboy.id);
-           
+         
             if (myDel.length === 0) {
                 contentContainer.innerHTML = `
                     <div class="card empty-state">
@@ -519,7 +571,13 @@
                             <div class="card-title" style="${isDelivered ? 'text-decoration: line-through;' : ''}">${d.product}</div>
                             <div class="reward">R$ ${d.reward.toFixed(2)}</div>
                         </div>
-                        <div class="address">📍 ${d.address}</div>
+                        <div class="address">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px; vertical-align: middle;">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            ${d.address}
+                        </div>
                         ${isDelivered
                             ? '<button class="btn btn-gray" disabled>✅ Concluída</button>'
                             : `<button class="btn btn-black" onclick="markDelivered('${d.id}')">Marcar como Entregue</button>`
@@ -567,7 +625,7 @@
                 phone,
                 vehicle
             };
-           
+         
             // Atualiza a interface lateral
             displayName.innerText = name;
             displayVehicle.innerText = vehicle;
@@ -580,7 +638,7 @@
                 switchTab('register');
                 return;
             }
-           
+         
             const delivery = deliveries.find(d => d.id === id);
             if (delivery) {
                 delivery.status = 'accepted';
@@ -596,11 +654,9 @@
                 renderMyDeliveries(); // Atualiza a lista
             }
         }
-
         // --- INICIALIZAÇÃO ---
         // Inicia na aba de entregas disponíveis
         renderAvailable();
-
         // NOVO: Inicializa o botão de modos (começa no modo claro) e adiciona o clique
         applyTheme();
         modeBtn.addEventListener('click', () => {
