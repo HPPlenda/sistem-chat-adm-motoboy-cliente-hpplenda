@@ -3,698 +3,446 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logística - Entregas</title>
-    <!-- Fonte Poppins carregada (necessária para aplicar em todo o sistema) -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap">
+    <title>Motoboy Delivery App</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Leaflet CSS (Mapa) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Feather Icons (Ícones SVG grátis) -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
     <style>
-        /* CSS Reset & Variáveis (Preto, Branco e Cinza) */
-        :root {
-            --black: #000000;
-            --white: #ffffff;
-            --gray-100: #f3f4f6;
-            --gray-200: #e5e7eb;
-            --gray-300: #d1d5db;
-            --gray-500: #6b7280;
-            --gray-800: #1f2937;
-            --gray-900: #111827;
+        /* Filtro para deixar o mapa em tons de cinza */
+        .map-tiles-grayscale {
+            filter: grayscale(100%);
         }
-   
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Poppins', sans-serif;
-            /* DESATIVAÇÃO DO QUADRO AZUL NO MOBILE (todas as mudanças feitas aqui) */
-            -webkit-tap-highlight-color: transparent;
+        
+        /* Ocultar elementos */
+        .hidden-view {
+            display: none !important;
         }
-   
-        body {
-            background-color: var(--gray-100);
-            color: var(--black);
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-        /* Layout Principal */
-        .sidebar {
-            width: 280px;
-            background-color: var(--black);
-            color: var(--white);
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.3s ease;
-            position: fixed;
+
+        /* Ajuste do container do mapa */
+        #map-container {
             height: 100%;
-            z-index: 40;
-            left: 0;
-            top: 0;
-        }
-   
-        .sidebar-header {
-            height: 60px;
-            padding: 0 20px;
-            font-size: 20px;
-            font-weight: bold;
-            border-bottom: 1px solid var(--gray-800);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-   
-        .nav-links {
-            flex: 1;
-            padding: 20px 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            overflow-y: auto;
-        }
-   
-        .nav-btn {
-            background: none;
-            border: none;
-            color: var(--gray-300);
-            padding: 12px 15px;
-            text-align: left;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: 0.2s;
-        }
-   
-        .nav-btn:hover {
-            background-color: var(--gray-800);
-            color: var(--white);
-        }
-   
-        .nav-btn.active {
-            background-color: var(--white);
-            color: var(--black);
-            font-weight: bold;
-        }
-   
-        .user-info {
-            padding: 20px;
-            border-top: 1px solid var(--gray-800);
-            background-color: var(--gray-900);
-        }
-   
-        .user-info p { margin-bottom: 5px; font-size: 14px; }
-        .user-name { font-weight: bold; color: var(--white); }
-        .user-vehicle { color: var(--gray-500); font-size: 12px; }
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            margin-left: 280px;
-            transition: margin 0.3s ease;
             width: 100%;
+            z-index: 0;
         }
-   
-        .header {
-            height: 60px;
-            background-color: var(--white);
-            border-bottom: 1px solid var(--gray-300);
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            /* ALTERAÇÃO FEITA: header sempre acima do overlay e sidebar no mobile */
-            position: relative;
-            z-index: 50;
-        }
-   
-        /* NOVO: Wrapper para alinhar título + botão de modos com as caixas de entregas no desktop */
-        .header-wrapper {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-   
-        .page-title {
-            font-size: 20px;
-            font-weight: bold;
-        }
-   
-        .content-area {
-            padding: 20px;
-            overflow-y: auto;
-            flex: 1;
-        }
-   
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        /* Menu Hambúrguer Animado */
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            justify-content: space-between;
-            width: 26px;
-            height: 18px;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            z-index: 50;
-            margin-right: 15px;
-        }
-   
-        .hamburger span {
-            display: block;
-            height: 3px;
-            width: 100%;
-            background-color: var(--black);
-            border-radius: 3px;
-            transition: all 0.3s ease;
-        }
-   
-        .hamburger.open span { background-color: var(--black); }
-        .hamburger.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
-        .hamburger.open span:nth-child(2) { opacity: 0; }
-        .hamburger.open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 30;
-            backdrop-filter: blur(2px);
-        }
-        /* Cards & Formulários */
-        .card {
-            background: var(--white);
-            border: 1px solid var(--gray-300);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-   
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 10px;
-        }
-   
-        .card-title {
-            font-size: 18px;
-            font-weight: bold;
-        }
-   
-        .reward {
-            background: var(--black);
-            color: var(--white);
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: bold;
-            white-space: nowrap;
-        }
-   
-        .address {
-            color: var(--gray-500);
-            font-size: 14px;
-            margin-bottom: 15px;
-            line-height: 1.4;
-            display: flex;
-            align-items: center;
-        }
-   
-        .btn {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-   
-        .btn-black { background: var(--black); color: var(--white); }
-        .btn-black:hover { background: var(--gray-800); }
-        .btn-gray { background: var(--gray-200); color: var(--gray-500); cursor: not-allowed; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 14px;
-            font-weight: bold;
-            color: var(--gray-800);
-        }
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--gray-300);
-            border-radius: 6px;
-            font-size: 16px;
-            background-color: var(--gray-100);
-            color: var(--black); /* Garante que o texto digitado/placholder sempre use a cor principal do tema */
-        }
-        .form-group input::placeholder {
-            color: var(--gray-500);
-        }
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--black);
-            background-color: var(--white);
-        }
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--gray-500);
-        }
-        /* Grid para Desktop */
-        .grid-cards {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-        }
-        /* Responsividade (Celular) */
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                /* NOVO: Sidebar começa ABAIXO do header para o botão de modos ficar SEMPRE visível acima da barra lateral */
-                top: 60px;
-                height: calc(100vh - 60px);
-            }
-            .sidebar.open { transform: translateX(0); }
-            .main-content { margin-left: 0; }
-            .hamburger { display: flex; }
-            .overlay.open { display: block; }
-            .sidebar-header { padding-left: 60px; }
-        }
-        @media (min-width: 769px) {
-            .grid-cards {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-        /* ==================== NOVO: BOTÃO DE MODOS (CLARO / ESCURO / CINZA) ==================== */
-        .mode-btn {
-            width: 42px;
-            height: 42px;
-            border: none;
-            border-radius: 50%;
-            background-color: var(--gray-300);
-            color: var(--black);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.4s ease;
-            margin-left: auto;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-   
-        .mode-btn:hover {
-            transform: scale(1.12);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-        }
-   
-        .mode-btn svg {
-            width: 28px;
-            height: 28px;
-        }
-        /* Temas (apenas redefinição de variáveis + overrides mínimos para sidebar, botões e reward) */
-        html[data-theme="dark"] {
-            --black: #ffffff;
-            --white: #000000; /* Totalmente preto no modo escuro */
-            --gray-100: #000000; /* Totalmente preto no modo escuro */
-            --gray-200: #1f2937;
-            --gray-300: #374151;
-            --gray-500: #9ca3af;
-            --gray-800: #4b5563;
-            --gray-900: #1f2937;
-        }
-   
-        html[data-theme="gray"] {
-            --black: #ffffff;
-            --white: #808080;
-            --gray-100: #808080;
-            --gray-200: #696969;
-            --gray-300: #a1a1a1;
-            --gray-500: #d1d1d1;
-            --gray-800: #696969;
-            --gray-900: #595959;
-        }
-        /* Overrides necessários para manter contraste em sidebar, reward e botões */
-        /* MODO ESCURO */
-        html[data-theme="dark"] .sidebar {
-            background-color: #000000;
-            color: #ffffff;
-        }
-        html[data-theme="dark"] .reward {
-            background-color: #374151;
-            color: #ffffff;
-        }
-        html[data-theme="dark"] .btn-black {
-            background-color: #374151; /* cinza escuro (como pedido) */
-            color: #ffffff;
-        }
-        /* NOVO: Apenas o modo escuro foi alterado conforme solicitado */
-        /* Aba ativa (nav-btn.active) agora fica cinza escuro no modo escuro */
-        /* (modo claro continua branco como já estava, modo cinza continua cinza como já estava) */
-        html[data-theme="dark"] .nav-btn.active {
-            background-color: #374151; /* cinza escuro */
-            color: #ffffff;
-        }
-        /* MODO CINZA */
-        html[data-theme="gray"] .sidebar {
-            background-color: #595959;
-            color: #ffffff;
-        }
-        html[data-theme="gray"] .reward {
-            background-color: #595959;
-            color: #ffffff;
-        }
-        html[data-theme="gray"] .btn-black {
-            background-color: #595959; /* cinza um pouco mais escuro (como pedido) */
-            color: #ffffff;
-        }
-        html[data-theme="gray"] .form-group label {
-            color: #ffffff; /* labels brancas (Nome Completo, Telefone, Placa) */
-        }
-        html[data-theme="gray"] .form-group input::placeholder {
-            color: #ffffff; /* texto dos inputs e placeholders brancos */
-        }
-        /* MODO BRANCO (light) */
-        html[data-theme="light"] .sidebar {
-            background-color: var(--gray-200); /* cinza claro */
-            color: var(--black);
-        }
-        html[data-theme="light"] .btn-black {
-            background-color: var(--gray-200); /* cinza claro */
-            color: var(--black);
-        }
-        /* ====================== NOVAS CORREÇÕES SOLICITADAS ====================== */
-        /* 1. Modo claro: TODAS as fontes da sidebar agora são preto (nav, user-info, etc) */
-        html[data-theme="light"] .nav-btn {
-            color: var(--black);
-        }
-        html[data-theme="light"] .nav-btn:hover {
-            background-color: var(--gray-300);
-            color: var(--black);
-        }
-        html[data-theme="light"] .user-info {
-            background-color: var(--gray-200);
-            border-top: 1px solid var(--gray-300);
-        }
-        html[data-theme="light"] .user-name {
-            color: var(--black);
-        }
-        html[data-theme="light"] .user-vehicle {
-            color: var(--black);
-        }
-        /* 2. Reward (preço) conforme solicitado */
-        html[data-theme="light"] .reward {
-            background-color: var(--gray-500);
-            color: var(--white);
-        }
-        /* 3. Hamburger X agora respeita o tema (preto no claro, branco no escuro/cinza) */
-        /* (já aplicado acima no .hamburger.open span) */
     </style>
 </head>
-<body>
-    <!-- Overlay escuro para mobile -->
-    <div class="overlay" id="overlay"></div>
-    <!-- Menu Lateral -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="m7.5 4.27 9 5.15"/>
-                <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
-                <path d="m3.3 7 8.7 5 8.7-5"/>
-                <path d="M12 22V12"/>
-            </svg>
-            Logística
-        </div>
-        <nav class="nav-links">
-            <button class="nav-btn active" onclick="switchTab('available')" id="btn-available">Entregas Disponíveis</button>
-            <button class="nav-btn" onclick="switchTab('my-deliveries')" id="btn-my-deliveries">Minhas Entregas</button>
-            <button class="nav-btn" onclick="switchTab('register')" id="btn-register">Cadastro de Motoboy</button>
-        </nav>
-        <div class="user-info">
-            <p class="user-name" id="display-name">Visitante</p>
-            <p class="user-vehicle" id="display-vehicle">Não cadastrado</p>
-        </div>
-    </aside>
-    <!-- Conteúdo Principal -->
-    <main class="main-content">
-        <header class="header">
-            <!-- Ícone Hambúrguer -->
-            <button class="hamburger" id="hamburger" onclick="toggleMenu()">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-           
-            <!-- Wrapper para manter o botão de modos alinhado com as caixas de entregas no desktop -->
-            <div class="header-wrapper">
-                <div class="page-title" id="page-title">Entregas Disponíveis</div>
+<body class="bg-gray-50 text-black font-sans antialiased">
+
+    <!-- ================= VIEW: LOGIN ================= -->
+    <div id="view-login" class="min-h-screen flex flex-col justify-center items-center p-4">
+        <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+            <div class="flex justify-center mb-6">
+                <div class="w-16 h-16 bg-black rounded-full flex items-center justify-center">
+                    <i data-feather="package" class="text-white w-8 h-8"></i>
+                </div>
+            </div>
+            <h1 class="text-2xl font-bold text-center text-black mb-2">Entrar no Sistema</h1>
+            <p class="text-center text-gray-500 mb-8">Acesse para ver as entregas disponíveis</p>
             
-                <!-- BOTÃO DE MODOS (mantido exatamente onde estava, sempre visível e alinhado à direita) -->
-                <button id="mode-btn" class="mode-btn"></button>
+            <form id="form-login" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
+                    <div class="relative">
+                        <i data-feather="mail" class="absolute left-3 top-3 w-5 h-5 text-gray-400"></i>
+                        <input type="email" id="login-email" required class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-colors text-black" placeholder="seu@email.com">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Senha</label>
+                    <div class="relative">
+                        <i data-feather="lock" class="absolute left-3 top-3 w-5 h-5 text-gray-400"></i>
+                        <input type="password" id="login-password" required class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-colors text-black" placeholder="••••••••">
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-black text-white font-medium py-3 rounded-lg hover:bg-gray-800 transition-colors mt-6">
+                    Entrar
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center">
+                <p class="text-gray-600 text-sm">
+                    Não tem uma conta? 
+                    <button onclick="switchView('view-register')" class="text-black font-bold hover:underline">Criar cadastro</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= VIEW: REGISTER ================= -->
+    <div id="view-register" class="min-h-screen flex flex-col justify-center items-center p-4 hidden-view">
+        <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+            <button onclick="switchView('view-login')" class="flex items-center text-gray-500 hover:text-black mb-6 transition-colors">
+                <i data-feather="arrow-left" class="w-4 h-4 mr-1"></i> Voltar
+            </button>
+            
+            <h1 class="text-2xl font-bold text-black mb-2">Criar Cadastro</h1>
+            <p class="text-gray-500 mb-8">Cadastre-se para começar a fazer entregas</p>
+            
+            <form id="form-register" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nome Completo</label>
+                    <div class="relative">
+                        <i data-feather="user" class="absolute left-3 top-3 w-5 h-5 text-gray-400"></i>
+                        <input type="text" id="reg-name" required class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-colors text-black" placeholder="João Silva">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
+                    <div class="relative">
+                        <i data-feather="mail" class="absolute left-3 top-3 w-5 h-5 text-gray-400"></i>
+                        <input type="email" id="reg-email" required class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-colors text-black" placeholder="seu@email.com">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Senha</label>
+                    <div class="relative">
+                        <i data-feather="lock" class="absolute left-3 top-3 w-5 h-5 text-gray-400"></i>
+                        <input type="password" id="reg-password" required class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none transition-colors text-black" placeholder="••••••••">
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-black text-white font-medium py-3 rounded-lg hover:bg-gray-800 transition-colors mt-6">
+                    Cadastrar
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= VIEW: DASHBOARD ================= -->
+    <div id="view-dashboard" class="min-h-screen pb-10 hidden-view">
+        <header class="bg-white border-b border-gray-200 sticky top-0 z-10">
+            <div class="max-w-3xl mx-auto px-4 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-black rounded-full flex items-center justify-center">
+                        <i data-feather="package" class="text-white w-4 h-4"></i>
+                    </div>
+                    <span class="font-bold text-black text-lg">Entregas</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span id="dashboard-user-name" class="text-sm font-medium text-gray-600 hidden sm:block">Olá, Motoboy</span>
+                    <button onclick="logout()" class="text-gray-500 hover:text-black transition-colors" title="Sair">
+                        <i data-feather="log-out" class="w-5 h-5"></i>
+                    </button>
+                </div>
             </div>
         </header>
-   
-        <div class="content-area">
-            <div class="container" id="content-container">
-                <!-- O conteúdo será injetado aqui via JavaScript -->
+
+        <main class="max-w-3xl mx-auto px-4 mt-8">
+            <div class="mb-6">
+                <h2 class="text-xl font-bold text-black">Pedidos Disponíveis</h2>
+                <p class="text-gray-500 text-sm">Aceite uma corrida para começar</p>
+            </div>
+
+            <div id="deliveries-list" class="space-y-4">
+                <!-- Pedidos serão injetados aqui via JS -->
+            </div>
+        </main>
+    </div>
+
+    <!-- ================= VIEW: DELIVERY (MAPA) ================= -->
+    <div id="view-delivery" class="h-screen flex flex-col hidden-view">
+        <header class="bg-white border-b border-gray-200 shrink-0">
+            <div class="max-w-3xl mx-auto px-4 h-16 flex items-center">
+                <button onclick="switchView('view-dashboard')" class="mr-4 text-gray-500 hover:text-black transition-colors">
+                    <i data-feather="arrow-left" class="w-6 h-6"></i>
+                </button>
+                <div>
+                    <h2 class="font-bold text-black leading-tight">Entrega em Andamento</h2>
+                    <p id="delivery-id-header" class="text-xs text-gray-500">DEL-000</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex-1 relative bg-gray-200">
+            <!-- Botão de Alternar Mapa/Satélite -->
+            <button onclick="toggleMapMode()" class="absolute top-4 right-4 bg-white text-black p-2 rounded-md shadow-md border border-gray-200 flex items-center gap-2 hover:bg-gray-100 transition-colors z-[400]">
+                <i data-feather="layers" class="w-5 h-5"></i>
+                <span id="map-toggle-text" class="text-sm font-bold">Satélite</span>
+            </button>
+
+            <!-- Container do Mapa -->
+            <div id="map-container"></div>
+            
+            <!-- Status Overlay -->
+            <div class="absolute top-4 left-1/2 -translate-x-1/2 bg-white px-4 py-2 rounded-full shadow-md border border-gray-200 flex items-center gap-2 z-[400]">
+                <span class="relative flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-gray-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-black"></span>
+                </span>
+                <span class="text-sm font-bold text-black uppercase tracking-wider">Em Rota</span>
             </div>
         </div>
-    </main>
-    <script>
-        // --- ESTADO DA APLICAÇÃO ---
-        let currentMotoboy = null;
-        let deliveries = [
-            { id: '1', product: 'Documentos Confidenciais', address: 'Av. Brigadeiro Faria Lima, 3000', status: 'pending', reward: 25.00 },
-            { id: '2', product: 'Peças de Computador', address: 'Rua Santa Ifigênia, 250', status: 'pending', reward: 18.50 },
-            { id: '3', product: 'Roupas de Grife', address: 'Rua Oscar Freire, 900', status: 'pending', reward: 30.00 },
-            { id: '4', product: 'Livros Didáticos', address: 'Av. Paulista, 1578', status: 'pending', reward: 12.00 },
-            { id: '5', product: 'Equipamento Fotográfico', address: 'Rua Augusta, 100', status: 'pending', reward: 45.00 }
-        ];
-        // NOVO: Estado do tema (3 modos exatamente como você pediu)
-        let currentThemeIndex = 0;
-        const themes = [
-            {
-                name: "light",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`
-            },
-            {
-                name: "dark",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`
-            },
-            {
-                name: "gray",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H6.5a5 5 0 0 1-1-9.9 5 5 0 0 1 9.78-1.78 5 5 0 0 1 3.72 8.68z"></path></svg>`
-            }
-        ];
-        // --- ELEMENTOS DO DOM ---
-        const sidebar = document.getElementById('sidebar');
-        const hamburger = document.getElementById('hamburger');
-        const overlay = document.getElementById('overlay');
-        const contentContainer = document.getElementById('content-container');
-        const pageTitle = document.getElementById('page-title');
-        const displayName = document.getElementById('display-name');
-        const displayVehicle = document.getElementById('display-vehicle');
-        const modeBtn = document.getElementById('mode-btn'); // NOVO botão de modos
-        // --- LÓGICA DO MENU HAMBÚRGUER ---
-        function toggleMenu() {
-            sidebar.classList.toggle('open');
-            hamburger.classList.toggle('open');
-            overlay.classList.toggle('open');
-        }
-        // Fechar menu ao clicar fora (no overlay)
-        overlay.addEventListener('click', toggleMenu);
-        // NOVO: Função que aplica o tema (muda data-theme e ícone do botão)
-        function applyTheme() {
-            const theme = themes[currentThemeIndex];
-            document.documentElement.setAttribute('data-theme', theme.name);
-            modeBtn.innerHTML = theme.icon;
-        }
-        // --- NAVEGAÇÃO DE ABAS ---
-        function switchTab(tab) {
-            // Atualiza botões ativos
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('btn-' + tab).classList.add('active');
-       
-            // Fecha o menu no celular ao clicar
-            if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
-                toggleMenu();
-            }
-            // Renderiza o conteúdo correto
-            if (tab === 'available') {
-                pageTitle.innerText = 'Entregas Disponíveis';
-                renderAvailable();
-            } else if (tab === 'my-deliveries') {
-                pageTitle.innerText = 'Minhas Entregas';
-                renderMyDeliveries();
-            } else if (tab === 'register') {
-                pageTitle.innerText = 'Cadastro de Motoboy';
-                renderRegister();
-            }
-        }
-        // --- FUNÇÕES DE RENDERIZAÇÃO ---
-        function renderAvailable() {
-            const pending = deliveries.filter(d => d.status === 'pending');
-       
-            if (pending.length === 0) {
-                contentContainer.innerHTML = `
-                    <div class="card empty-state">
-                        <h3>Nenhuma entrega disponível no momento.</h3>
-                    </div>`;
-                return;
-            }
-            let html = '<div class="grid-cards">';
-            pending.forEach(d => {
-                html += `
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">${d.product}</div>
-                            <div class="reward">R$ ${d.reward.toFixed(2)}</div>
-                        </div>
-                        <div class="address">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px; vertical-align: middle;">
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            ${d.address}
-                        </div>
-                        <button class="btn btn-black" onclick="acceptDelivery('${d.id}')">Aceitar Entrega</button>
+
+        <div class="bg-white border-t border-gray-200 p-4 shrink-0 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-[400]">
+            <div class="max-w-3xl mx-auto">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h3 id="delivery-product" class="font-bold text-black text-lg">Produto</h3>
+                        <p id="delivery-address" class="text-sm text-gray-600 mt-1">Endereço</p>
                     </div>
-                `;
-            });
-            html += '</div>';
-            contentContainer.innerHTML = html;
-        }
-        function renderMyDeliveries() {
-            if (!currentMotoboy) {
-                contentContainer.innerHTML = `
-                    <div class="card empty-state">
-                        <p style="margin-bottom: 15px; font-size: 16px;">Você precisa estar cadastrado para ver suas entregas.</p>
-                        <button class="btn btn-black" onclick="switchTab('register')">Fazer Cadastro</button>
+                    <div class="text-right">
+                        <span id="delivery-payout" class="block text-xl font-black text-black">R$ 0,00</span>
+                        <span class="text-sm text-gray-500 flex items-center justify-end gap-1 mt-1">
+                            <i data-feather="clock" class="w-3 h-3"></i> ~15 min
+                        </span>
                     </div>
-                `;
-                return;
-            }
-            const myDel = deliveries.filter(d => d.motoboyId === currentMotoboy.id);
-       
-            if (myDel.length === 0) {
-                contentContainer.innerHTML = `
-                    <div class="card empty-state">
-                        <h3>Você ainda não aceitou nenhuma entrega.</h3>
-                    </div>`;
-                return;
-            }
-            let html = '<div class="grid-cards">';
-            myDel.forEach(d => {
-                const isDelivered = d.status === 'delivered';
-                html += `
-                    <div class="card" style="${isDelivered ? 'opacity: 0.6; background: #f9fafb;' : ''}">
-                        <div class="card-header">
-                            <div class="card-title" style="${isDelivered ? 'text-decoration: line-through;' : ''}">${d.product}</div>
-                            <div class="reward">R$ ${d.reward.toFixed(2)}</div>
-                        </div>
-                        <div class="address">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px; vertical-align: middle;">
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            ${d.address}
-                        </div>
-                        ${isDelivered
-                            ? '<button class="btn btn-gray" disabled>✅ Concluída</button>'
-                            : `<button class="btn btn-black" onclick="markDelivered('${d.id}')">Marcar como Entregue</button>`
-                        }
-                    </div>
-                `;
-            });
-            html += '</div>';
-            contentContainer.innerHTML = html;
-        }
-        function renderRegister() {
-            contentContainer.innerHTML = `
-                <div class="card">
-                    <h2 style="margin-bottom: 20px;">Dados do Entregador</h2>
-                    <form id="register-form" onsubmit="handleRegister(event)">
-                        <div class="form-group">
-                            <label>Nome Completo</label>
-                            <input type="text" id="reg-name" required placeholder="Ex: João da Silva" value="${currentMotoboy ? currentMotoboy.name : ''}">
-                        </div>
-                        <div class="form-group">
-                            <label>Telefone</label>
-                            <input type="tel" id="reg-phone" required placeholder="(11) 99999-9999" value="${currentMotoboy ? currentMotoboy.phone : ''}">
-                        </div>
-                        <div class="form-group">
-                            <label>Placa do Veículo</label>
-                            <input type="text" id="reg-vehicle" required placeholder="ABC-1234" style="text-transform: uppercase;" value="${currentMotoboy ? currentMotoboy.vehicle : ''}">
-                        </div>
-                        <button type="submit" class="btn btn-black" style="margin-top: 10px;">
-                            ${currentMotoboy ? 'Atualizar Cadastro' : 'Cadastrar e Começar'}
-                        </button>
-                    </form>
                 </div>
-            `;
+                
+                <button onclick="finishDelivery()" class="w-full bg-black text-white font-medium py-4 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 text-lg">
+                    <i data-feather="check-circle" class="w-6 h-6"></i>
+                    Finalizar Entrega
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Lógica do Aplicativo -->
+    <script>
+        // Inicializar ícones
+        feather.replace();
+
+        // Estado do App
+        let registeredUser = null;
+        let activeDelivery = null;
+        let mapInstance = null;
+        
+        // Camadas do mapa
+        let currentLayerMode = 'normal';
+        let normalLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            className: 'map-tiles-grayscale'
+        });
+        let satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri',
+            className: 'map-tiles-grayscale'
+        });
+        let routePolyline = null;
+
+        // Dados Mockados
+        const MOCK_DELIVERIES = [
+            {
+                id: 'DEL-001',
+                product: 'Notebook Dell XPS 15',
+                address: 'Av. Paulista, 1000 - Bela Vista',
+                distance: '3.2 km',
+                payout: 'R$ 15,00',
+                driverLocation: [-23.5505, -46.6333], // Praça da Sé
+                deliveryLocation: [-23.5655, -46.6533], // Av Paulista
+            },
+            {
+                id: 'DEL-002',
+                product: 'Documentos Confidenciais',
+                address: 'Rua Augusta, 500 - Consolação',
+                distance: '1.8 km',
+                payout: 'R$ 9,50',
+                driverLocation: [-23.5505, -46.6333],
+                deliveryLocation: [-23.5485, -46.6483],
+            },
+            {
+                id: 'DEL-003',
+                product: 'Peças Automotivas',
+                address: 'Av. Brigadeiro Faria Lima, 2000',
+                distance: '6.5 km',
+                payout: 'R$ 22,00',
+                driverLocation: [-23.5505, -46.6333],
+                deliveryLocation: [-23.5805, -46.6833],
+            }
+        ];
+
+        // Navegação entre telas
+        function switchView(viewId) {
+            document.querySelectorAll('body > div').forEach(el => {
+                if (el.id.startsWith('view-')) {
+                    el.classList.add('hidden-view');
+                }
+            });
+            document.getElementById(viewId).classList.remove('hidden-view');
+            
+            if (viewId === 'view-dashboard') {
+                renderDeliveries();
+            }
+            
+            feather.replace();
         }
-        // --- AÇÕES DO SISTEMA ---
-        function handleRegister(e) {
+
+        // Registro
+        document.getElementById('form-register').addEventListener('submit', (e) => {
             e.preventDefault();
             const name = document.getElementById('reg-name').value;
-            const phone = document.getElementById('reg-phone').value;
-            const vehicle = document.getElementById('reg-vehicle').value.toUpperCase();
-            // Salva os dados localmente na variável
-            currentMotoboy = {
-                id: Date.now().toString(),
-                name,
-                phone,
-                vehicle
-            };
-       
-            // Atualiza a interface lateral
-            displayName.innerText = name;
-            displayVehicle.innerText = vehicle;
-            alert('Cadastro realizado com sucesso!');
-            switchTab('available'); // Redireciona para as entregas
-        }
-        function acceptDelivery(id) {
-            if (!currentMotoboy) {
-                alert('Por favor, cadastre-se primeiro para aceitar entregas.');
-                switchTab('register');
-                return;
-            }
-       
-            const delivery = deliveries.find(d => d.id === id);
-            if (delivery) {
-                delivery.status = 'accepted';
-                delivery.motoboyId = currentMotoboy.id;
-                alert('Entrega aceita! Verifique na aba "Minhas Entregas".');
-                renderAvailable(); // Atualiza a lista
-            }
-        }
-        function markDelivered(id) {
-            const delivery = deliveries.find(d => d.id === id);
-            if (delivery) {
-                delivery.status = 'delivered';
-                renderMyDeliveries(); // Atualiza a lista
-            }
-        }
-        // --- INICIALIZAÇÃO ---
-        // Inicia na aba de entregas disponíveis
-        renderAvailable();
-        // NOVO: Inicializa o botão de modos (começa no modo claro) e adiciona o clique
-        applyTheme();
-        modeBtn.addEventListener('click', () => {
-            currentThemeIndex = (currentThemeIndex + 1) % 3;
-            applyTheme();
+            const email = document.getElementById('reg-email').value;
+            
+            registeredUser = { name, email };
+            
+            document.getElementById('form-register').reset();
+            document.getElementById('login-email').value = email;
+            switchView('view-login');
+            alert('Cadastro criado com sucesso! Faça login.');
         });
+
+        // Login
+        document.getElementById('form-login').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            
+            if ((registeredUser && email === registeredUser.email) || email === 'teste@teste.com') {
+                const userName = registeredUser ? registeredUser.name : 'Motoboy Teste';
+                document.getElementById('dashboard-user-name').innerText = `Olá, ${userName}`;
+                switchView('view-dashboard');
+            } else {
+                alert('Usuário não encontrado. Crie uma conta ou use teste@teste.com');
+            }
+        });
+
+        // Logout
+        function logout() {
+            document.getElementById('form-login').reset();
+            switchView('view-login');
+        }
+
+        // Renderizar lista de entregas
+        function renderDeliveries() {
+            const listContainer = document.getElementById('deliveries-list');
+            listContainer.innerHTML = '';
+
+            MOCK_DELIVERIES.forEach(delivery => {
+                const card = document.createElement('div');
+                card.className = 'bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow';
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <span class="inline-block px-2 py-1 bg-gray-100 text-gray-800 text-xs font-bold rounded mb-2">${delivery.id}</span>
+                            <h3 class="font-bold text-black text-lg">${delivery.product}</h3>
+                        </div>
+                        <div class="text-right">
+                            <span class="block text-xl font-black text-black">${delivery.payout}</span>
+                            <span class="text-sm text-gray-500 flex items-center justify-end gap-1 mt-1">
+                                <i data-feather="navigation" class="w-3 h-3"></i> ${delivery.distance}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start gap-3 mb-6 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                        <i data-feather="map-pin" class="w-5 h-5 text-gray-400 mt-0.5 shrink-0"></i>
+                        <div>
+                            <p class="text-xs text-gray-500 font-medium uppercase tracking-wider mb-0.5">Destino</p>
+                            <p class="text-sm text-black font-medium">${delivery.address}</p>
+                        </div>
+                    </div>
+
+                    <button onclick="acceptDelivery('${delivery.id}')" class="w-full bg-black text-white font-medium py-3 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2">
+                        <i data-feather="check-circle" class="w-5 h-5"></i>
+                        Aceitar Entrega
+                    </button>
+                `;
+                listContainer.appendChild(card);
+            });
+            feather.replace();
+        }
+
+        // Aceitar Entrega
+        function acceptDelivery(id) {
+            activeDelivery = MOCK_DELIVERIES.find(d => d.id === id);
+            
+            document.getElementById('delivery-id-header').innerText = activeDelivery.id;
+            document.getElementById('delivery-product').innerText = activeDelivery.product;
+            document.getElementById('delivery-address').innerText = activeDelivery.address;
+            document.getElementById('delivery-payout').innerText = activeDelivery.payout;
+            
+            switchView('view-delivery');
+            
+            setTimeout(() => {
+                initMap(activeDelivery);
+            }, 100);
+        }
+
+        // Finalizar Entrega
+        function finishDelivery() {
+            activeDelivery = null;
+            switchView('view-dashboard');
+            alert('Entrega finalizada com sucesso!');
+        }
+
+        // Alternar entre Mapa Normal e Satélite
+        function toggleMapMode() {
+            if (!mapInstance) return;
+
+            if (currentLayerMode === 'normal') {
+                mapInstance.removeLayer(normalLayer);
+                satelliteLayer.addTo(mapInstance);
+                if (routePolyline) routePolyline.setStyle({ color: 'white' });
+                currentLayerMode = 'satellite';
+                document.getElementById('map-toggle-text').innerText = 'Mapa';
+            } else {
+                mapInstance.removeLayer(satelliteLayer);
+                normalLayer.addTo(mapInstance);
+                if (routePolyline) routePolyline.setStyle({ color: 'black' });
+                currentLayerMode = 'normal';
+                document.getElementById('map-toggle-text').innerText = 'Satélite';
+            }
+        }
+
+        // Inicializar Mapa Leaflet (Linha Reta)
+        function initMap(delivery) {
+            if (mapInstance) {
+                mapInstance.remove();
+            }
+
+            mapInstance = L.map('map-container', { zoomControl: false });
+            currentLayerMode = 'normal';
+            document.getElementById('map-toggle-text').innerText = 'Satélite';
+
+            // Adicionar tile layer inicial (Normal)
+            normalLayer.addTo(mapInstance);
+
+            // Ícone do Motorista (Preto)
+            const driverIcon = L.divIcon({
+                className: 'bg-transparent border-0',
+                html: `<div class="flex items-center justify-center w-10 h-10 bg-black rounded-full border-2 border-white shadow-md"><i data-feather="navigation" style="color: white; width: 20px; height: 20px;"></i></div>`,
+                iconSize: [40, 40],
+                iconAnchor: [20, 20],
+                popupAnchor: [0, -20],
+            });
+
+            // Ícone do Destino (Cinza)
+            const destIcon = L.divIcon({
+                className: 'bg-transparent border-0',
+                html: `<div class="flex items-center justify-center w-10 h-10 bg-gray-500 rounded-full border-2 border-white shadow-md"><i data-feather="package" style="color: white; width: 20px; height: 20px;"></i></div>`,
+                iconSize: [40, 40],
+                iconAnchor: [20, 20],
+                popupAnchor: [0, -20],
+            });
+
+            // Adicionar Marcadores
+            L.marker(delivery.driverLocation, {icon: driverIcon})
+                .addTo(mapInstance)
+                .bindPopup('<div class="text-black font-medium text-center">Sua localização</div>');
+                
+            L.marker(delivery.deliveryLocation, {icon: destIcon})
+                .addTo(mapInstance)
+                .bindPopup(`<div class="text-black font-medium text-center">Destino:<br/><span class="text-gray-600">${delivery.product}</span></div>`);
+
+            // Traçar linha reta
+            routePolyline = L.polyline([delivery.driverLocation, delivery.deliveryLocation], {
+                color: 'black', 
+                weight: 3, 
+                dashArray: '8, 8'
+            }).addTo(mapInstance);
+
+            // Ajustar zoom
+            const bounds = L.latLngBounds([delivery.driverLocation, delivery.deliveryLocation]);
+            mapInstance.fitBounds(bounds, { padding: [50, 50] });
+
+            feather.replace();
+        }
     </script>
 </body>
 </html>
