@@ -46,8 +46,9 @@
         }
         /* Safe area inset para barra de navegação nativa do Android */
         /* Mantém o campo de input sempre visível acima dos botões voltar/home/minimizar */
+        /* Removido o padding extra (2rem) para eliminar distâncias desnecessárias no Android */
         .input-area {
-            padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+            padding-bottom: env(safe-area-inset-bottom, 0px);
         }
         /* Animação do botão de enviar: o ícone troca de cor para a cor do botão (preto) em 0.3s */
         #send-button svg {
