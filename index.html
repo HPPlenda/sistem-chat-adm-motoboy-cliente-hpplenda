@@ -78,11 +78,11 @@
 </head>
 <body class="bg-gray-300 text-black font-sans antialiased min-h-screen flex md:items-center md:justify-center p-0 md:p-4">
     <div class="w-full max-w-3xl bg-white md:rounded-3xl shadow-2xl overflow-hidden flex flex-col h-[100dvh] md:h-[90vh]">
-  
+ 
         <!-- Cabeçalho -->
         <div class="bg-black text-white p-4 flex justify-between items-center z-10 shadow-md">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center border border-gray-600">
+                <div class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center border border-gray-600 flex-shrink-0">
                     <!-- Ícone Moto agora usando o caractere a da fonte icon_entrega.ttf -->
                     <span class="icon-motoboy text-white" style="font-size: 24px;">a</span>
                 </div>
@@ -121,7 +121,7 @@
                     </button>
                 </div>
             </div>
-      
+     
             <form id="chat-form" class="flex gap-2 items-end">
                 <div class="flex-1 bg-gray-100 rounded-3xl border border-gray-200 focus-within:border-gray-400 focus-within:bg-white transition-colors overflow-hidden flex items-center">
                     <input
@@ -179,15 +179,15 @@
         // Mudar o papel atual (Quem está enviando)
         function setRole(role) {
             currentRole = role;
-      
+     
             // Atualizar botões
             document.querySelectorAll('.role-btn').forEach(btn => {
                 btn.className = 'role-btn flex items-center gap-1.5 px-3 py-2 md:px-5 md:py-2.5 rounded-full text-xs md:text-sm font-semibold transition-all duration-200 bg-gray-100 text-gray-600 hover:bg-gray-200';
             });
-      
+     
             const activeBtn = document.getElementById(`btn-${role}`);
             activeBtn.className = 'role-btn flex items-center gap-1.5 px-3 py-2 md:px-5 md:py-2.5 rounded-full text-xs md:text-sm font-semibold transition-all duration-200 bg-black text-white shadow-md transform scale-105';
-      
+     
             renderMessages(); // Re-renderizar para ajustar o lado das mensagens (direita/esquerda)
         }
         // Enviar mensagem COM ANIMAÇÃO DE 0.3s NO ÍCONE
@@ -211,11 +211,11 @@
                 };
                 messages.push(newMessage);
                 localStorage.setItem('chat_messages', JSON.stringify(messages));
-          
+         
                 messageInput.value = '';
                 // Reverte a cor do ícone
                 svg.setAttribute('stroke', originalStroke);
-            
+           
                 renderMessages();
                 // O listener do input já cuida de desabilitar o botão
             }, 300);
@@ -248,11 +248,11 @@
             messages.forEach((msg, index) => {
                 const isMe = msg.role === currentRole;
                 const showHeader = index === 0 || messages[index - 1].role !== msg.role;
-          
+         
                 // Definir cores baseadas no papel
                 let colorClass = '';
                 let timeColorClass = '';
-          
+         
                 if (msg.role === 'ADM') {
                     colorClass = 'bg-black text-white';
                     timeColorClass = 'text-gray-400';
