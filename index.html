@@ -57,11 +57,10 @@
             margin: 0;
             padding: 0;
         }
-
         /* Fonte de ícones personalizada (meusiconessociais.ttf) */
         @font-face {
             font-family: 'MeusIconesSociais';
-            src: url('meusiconessociais.ttf') format('truetype');
+            src: url('icon_entrega.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
         }
@@ -74,13 +73,13 @@
 </head>
 <body class="bg-gray-300 text-black font-sans antialiased min-h-screen flex md:items-center md:justify-center p-0 md:p-4">
     <div class="w-full max-w-3xl bg-white md:rounded-3xl shadow-2xl overflow-hidden flex flex-col h-[100dvh] md:h-[90vh]">
-    
+   
         <!-- Cabeçalho -->
         <div class="bg-black text-white p-4 flex justify-between items-center z-10 shadow-md">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center border border-gray-600">
                     <!-- Ícone Moto agora usando o caractere > da fonte meusiconessociais.ttf -->
-                    <span class="icon-motoboy text-white" style="font-size: 24px;">></span>
+                    <span class="icon-motoboy text-white" style="font-size: 24px;">a</span>
                 </div>
                 <div>
                     <h1 class="text-lg font-bold leading-tight">Código de entrega: #ADM_MOTOBOY_CLIENTE</h1>
@@ -103,21 +102,21 @@
                 <div class="flex justify-center gap-2 md:gap-4" id="role-selector">
                     <!-- Botões de Papel -->
                     <button onclick="setRole('ADM')" id="btn-ADM" class="role-btn flex items-center gap-1.5 px-3 py-2 md:px-5 md:py-2.5 rounded-full text-xs md:text-sm font-semibold transition-all duration-200 bg-black text-white shadow-md transform scale-105">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
+                        <span class="icon-motoboy" style="font-size: 16px;">c</span>
                         ADM
                     </button>
                     <button onclick="setRole('MOTOBOY')" id="btn-MOTOBOY" class="role-btn flex items-center gap-1.5 px-3 py-2 md:px-5 md:py-2.5 rounded-full text-xs md:text-sm font-semibold transition-all duration-200 bg-gray-100 text-gray-600 hover:bg-gray-200">
                         <!-- Ícone Motoboy agora usando o caractere > da fonte meusiconessociais.ttf -->
-                        <span class="icon-motoboy" style="font-size: 16px;">></span>
+                        <span class="icon-motoboy" style="font-size: 16px;">a</span>
                         MOTOBOY
                     </button>
                     <button onclick="setRole('CLIENTE')" id="btn-CLIENTE" class="role-btn flex items-center gap-1.5 px-3 py-2 md:px-5 md:py-2.5 rounded-full text-xs md:text-sm font-semibold transition-all duration-200 bg-gray-100 text-gray-600 hover:bg-gray-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span class="icon-motoboy" style="font-size: 16px;">d</span>
                         CLIENTE
                     </button>
                 </div>
             </div>
-        
+       
             <form id="chat-form" class="flex gap-2 items-end">
                 <div class="flex-1 bg-gray-100 rounded-3xl border border-gray-200 focus-within:border-gray-400 focus-within:bg-white transition-colors overflow-hidden flex items-center">
                     <input
@@ -152,9 +151,9 @@
         const sendButton = document.getElementById('send-button');
         // Ícones SVG para cada papel (apenas Motoboy trocado pelo caractere > da fonte)
         const icons = {
-            ADM: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>',
-            MOTOBOY: '<span class="icon-motoboy" style="font-size: 14px;">></span>',
-            CLIENTE: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'
+            ADM: '<span class="icon-motoboy" style="font-size: 14px;">c</span>',
+            MOTOBOY: '<span class="icon-motoboy" style="font-size: 14px;">a</span>',
+            CLIENTE: '<span class="icon-motoboy" style="font-size: 14px;">d</span>'
         };
         // Inicialização
         function init() {
@@ -175,15 +174,15 @@
         // Mudar o papel atual (Quem está enviando)
         function setRole(role) {
             currentRole = role;
-        
+       
             // Atualizar botões
             document.querySelectorAll('.role-btn').forEach(btn => {
                 btn.className = 'role-btn flex items-center gap-1.5 px-3 py-2 md:px-5 md:py-2.5 rounded-full text-xs md:text-sm font-semibold transition-all duration-200 bg-gray-100 text-gray-600 hover:bg-gray-200';
             });
-        
+       
             const activeBtn = document.getElementById(`btn-${role}`);
             activeBtn.className = 'role-btn flex items-center gap-1.5 px-3 py-2 md:px-5 md:py-2.5 rounded-full text-xs md:text-sm font-semibold transition-all duration-200 bg-black text-white shadow-md transform scale-105';
-        
+       
             renderMessages(); // Re-renderizar para ajustar o lado das mensagens (direita/esquerda)
         }
         // Enviar mensagem COM ANIMAÇÃO DE 0.3s NO ÍCONE
@@ -207,11 +206,11 @@
                 };
                 messages.push(newMessage);
                 localStorage.setItem('chat_messages', JSON.stringify(messages));
-            
+           
                 messageInput.value = '';
                 // Reverte a cor do ícone
                 svg.setAttribute('stroke', originalStroke);
-              
+             
                 renderMessages();
                 // O listener do input já cuida de desabilitar o botão
             }, 300);
@@ -244,11 +243,11 @@
             messages.forEach((msg, index) => {
                 const isMe = msg.role === currentRole;
                 const showHeader = index === 0 || messages[index - 1].role !== msg.role;
-            
+           
                 // Definir cores baseadas no papel
                 let colorClass = '';
                 let timeColorClass = '';
-            
+           
                 if (msg.role === 'ADM') {
                     colorClass = 'bg-black text-white';
                     timeColorClass = 'text-gray-400';
