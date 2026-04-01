@@ -54,9 +54,14 @@
         #send-button svg {
             transition: stroke 0.3s ease-in-out;
         }
+        /* Garante que não haja nenhuma barra ou espaço extra no topo no Android */
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
     </style>
 </head>
-<body class="bg-gray-300 text-black font-sans antialiased min-h-screen flex items-center justify-center md:p-4">
+<body class="bg-gray-300 text-black font-sans antialiased min-h-screen flex md:items-center md:justify-center p-0 md:p-4">
     <div class="w-full max-w-3xl bg-white md:rounded-3xl shadow-2xl overflow-hidden flex flex-col h-[100dvh] md:h-[90vh]">
      
         <!-- Cabeçalho -->
