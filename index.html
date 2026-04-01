@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Logística</title>
-  
+ 
     <!-- Fonte Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
+ 
     <!-- Tailwind CSS para Estilização -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -44,13 +44,11 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
-
         /* Safe area inset para barra de navegação nativa do Android */
         /* Mantém o campo de input sempre visível acima dos botões voltar/home/minimizar */
         .input-area {
-            padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+            padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
         }
-
         /* Animação do botão de enviar: o ícone troca de cor para a cor do botão (preto) em 0.3s */
         #send-button svg {
             transition: stroke 0.3s ease-in-out;
@@ -58,8 +56,8 @@
     </style>
 </head>
 <body class="bg-gray-300 text-black font-sans antialiased min-h-screen flex items-center justify-center md:p-4">
-    <div class="w-full max-w-3xl bg-white md:rounded-3xl shadow-2xl overflow-hidden flex flex-col h-screen md:h-[90vh]">
-      
+    <div class="w-full max-w-3xl bg-white md:rounded-3xl shadow-2xl overflow-hidden flex flex-col h-[100dvh] md:h-[90vh]">
+     
         <!-- Cabeçalho -->
         <div class="bg-black text-white p-4 flex justify-between items-center z-10 shadow-md">
             <div class="flex items-center gap-3">
@@ -105,7 +103,7 @@
                     </button>
                 </div>
             </div>
-          
+         
             <form id="chat-form" class="flex gap-2 items-end">
                 <div class="flex-1 bg-gray-100 rounded-3xl border border-gray-200 focus-within:border-gray-400 focus-within:bg-white transition-colors overflow-hidden flex items-center">
                     <input
@@ -163,15 +161,15 @@
         // Mudar o papel atual (Quem está enviando)
         function setRole(role) {
             currentRole = role;
-          
+         
             // Atualizar botões
             document.querySelectorAll('.role-btn').forEach(btn => {
                 btn.className = 'role-btn flex items-center gap-1.5 px-3 py-2 md:px-5 md:py-2.5 rounded-full text-xs md:text-sm font-semibold transition-all duration-200 bg-gray-100 text-gray-600 hover:bg-gray-200';
             });
-          
+         
             const activeBtn = document.getElementById(`btn-${role}`);
             activeBtn.className = 'role-btn flex items-center gap-1.5 px-3 py-2 md:px-5 md:py-2.5 rounded-full text-xs md:text-sm font-semibold transition-all duration-200 bg-black text-white shadow-md transform scale-105';
-          
+         
             renderMessages(); // Re-renderizar para ajustar o lado das mensagens (direita/esquerda)
         }
         // Enviar mensagem COM ANIMAÇÃO DE 0.3s NO ÍCONE
@@ -179,15 +177,12 @@
             e.preventDefault();
             const text = messageInput.value.trim();
             if (!text) return;
-
             // 1. Inicia a animação: ícone troca de cor para a cor do botão (preto)
             const svg = sendButton.querySelector('svg');
             const originalStroke = svg.getAttribute('stroke') || 'currentColor';
             svg.setAttribute('stroke', '#111111'); // cor do botão (preto)
-
             // Desabilita o botão durante a animação para evitar duplo envio
             sendButton.disabled = true;
-
             // 2. Depois de 0.3s, envia a mensagem e volta o ícone ao normal
             setTimeout(() => {
                 const newMessage = {
@@ -198,11 +193,11 @@
                 };
                 messages.push(newMessage);
                 localStorage.setItem('chat_messages', JSON.stringify(messages));
-              
+             
                 messageInput.value = '';
                 // Reverte a cor do ícone
                 svg.setAttribute('stroke', originalStroke);
-                
+               
                 renderMessages();
                 // O listener do input já cuida de desabilitar o botão
             }, 300);
@@ -235,11 +230,11 @@
             messages.forEach((msg, index) => {
                 const isMe = msg.role === currentRole;
                 const showHeader = index === 0 || messages[index - 1].role !== msg.role;
-              
+             
                 // Definir cores baseadas no papel
                 let colorClass = '';
                 let timeColorClass = '';
-              
+             
                 if (msg.role === 'ADM') {
                     colorClass = 'bg-black text-white';
                     timeColorClass = 'text-gray-400';
