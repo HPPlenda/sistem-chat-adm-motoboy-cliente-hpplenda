@@ -49,8 +49,8 @@
             padding-bottom: env(safe-area-inset-bottom, 0px);
         }
         /* Animação do botão de enviar: o ícone troca de cor para a cor do botão (preto) em 0.3s */
-        #send-button svg {
-            transition: stroke 0.3s ease-in-out;
+        #send-button .icon-motoboy {
+            transition: color 0.3s ease-in-out;
         }
         /* Garante que não haja nenhuma barra ou espaço extra no topo no Android */
         html, body {
@@ -120,7 +120,7 @@
                     </button>
                 </div>
             </div>
-    
+   
             <form id="chat-form" class="flex gap-2 items-end">
                 <div class="flex-1 bg-gray-100 rounded-3xl border border-gray-200 focus-within:border-gray-400 focus-within:bg-white transition-colors overflow-hidden flex items-center">
                     <input
@@ -137,8 +137,8 @@
                     disabled
                     class="bg-black text-white p-3 md:p-4 rounded-full hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center shadow-md flex-shrink-0"
                 >
-                    <!-- Ícone centralizado (sem ml-1) -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                    <!-- Ícone centralizado (letra "f" da fonte icon_entrega.ttf) -->
+                    <span id="send-icon" class="icon-motoboy" style="font-size: 24px;">f</span>
                 </button>
             </form>
         </div>
@@ -153,6 +153,7 @@
         const chatForm = document.getElementById('chat-form');
         const messageInput = document.getElementById('message-input');
         const sendButton = document.getElementById('send-button');
+        const sendIcon = document.getElementById('send-icon');
         // Ícones SVG para cada papel (apenas Motoboy trocado pelo caractere > da fonte)
         const icons = {
             ADM: '<span class="icon-motoboy" style="font-size: 14px;">c</span>',
@@ -178,15 +179,15 @@
         // Mudar o papel atual (Quem está enviando)
         function setRole(role) {
             currentRole = role;
-    
+   
             // Atualizar botões
             document.querySelectorAll('.role-btn').forEach(btn => {
                 btn.className = 'role-btn flex items-center gap-1.5 px-3 py-2 md:px-5 md:py-2.5 rounded-full text-xs md:text-sm font-semibold transition-all duration-200 bg-gray-100 text-gray-600 hover:bg-gray-200';
             });
-    
+   
             const activeBtn = document.getElementById(`btn-${role}`);
             activeBtn.className = 'role-btn flex items-center gap-1.5 px-3 py-2 md:px-5 md:py-2.5 rounded-full text-xs md:text-sm font-semibold transition-all duration-200 bg-black text-white shadow-md transform scale-105';
-    
+   
             renderMessages(); // Re-renderizar para ajustar o lado das mensagens (direita/esquerda)
         }
         // Enviar mensagem COM ANIMAÇÃO DE 0.3s NO ÍCONE
@@ -195,9 +196,8 @@
             const text = messageInput.value.trim();
             if (!text) return;
             // 1. Inicia a animação: ícone troca de cor para a cor do botão (preto)
-            const svg = sendButton.querySelector('svg');
-            const originalStroke = svg.getAttribute('stroke') || 'currentColor';
-            svg.setAttribute('stroke', '#111111'); // cor do botão (preto)
+            const originalColor = sendIcon.style.color || '#ffffff';
+            sendIcon.style.color = '#111111'; // cor do botão (preto)
             // Desabilita o botão durante a animação para evitar duplo envio
             sendButton.disabled = true;
             // 2. Depois de 0.3s, envia a mensagem e volta o ícone ao normal
@@ -210,11 +210,11 @@
                 };
                 messages.push(newMessage);
                 localStorage.setItem('chat_messages', JSON.stringify(messages));
-        
+       
                 messageInput.value = '';
                 // Reverte a cor do ícone
-                svg.setAttribute('stroke', originalStroke);
-          
+                sendIcon.style.color = originalColor;
+         
                 renderMessages();
                 // O listener do input já cuida de desabilitar o botão
             }, 300);
@@ -245,11 +245,11 @@
             messages.forEach((msg, index) => {
                 const isMe = msg.role === currentRole;
                 const showHeader = index === 0 || messages[index - 1].role !== msg.role;
-        
+       
                 // Definir cores baseadas no papel
                 let colorClass = '';
                 let timeColorClass = '';
-        
+       
                 if (msg.role === 'ADM') {
                     colorClass = 'bg-black text-white';
                     timeColorClass = 'text-gray-400';
