@@ -135,10 +135,10 @@
                     type="submit"
                     id="send-button"
                     disabled
-                    class="bg-black text-white p-3 md:p-4 rounded-full hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center shadow-md flex-shrink-0"
+                    class="bg-black text-white p-3 md:p-4 rounded-full hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center shadow-md flex-shrink-0 w-12 h-12 md:w-14 md:h-14"
                 >
-                    <!-- Ícone centralizado (letra "f" da fonte icon_entrega.ttf) -->
-                    <span id="send-icon" class="icon-motoboy" style="font-size: 24px;">f</span>
+                    <!-- Ícone centralizado: letra "f" da fonte icon_entrega.ttf -->
+                    <span class="icon-motoboy" style="font-size: 22px;">f</span>
                 </button>
             </form>
         </div>
@@ -153,7 +153,6 @@
         const chatForm = document.getElementById('chat-form');
         const messageInput = document.getElementById('message-input');
         const sendButton = document.getElementById('send-button');
-        const sendIcon = document.getElementById('send-icon');
         // Ícones SVG para cada papel (apenas Motoboy trocado pelo caractere > da fonte)
         const icons = {
             ADM: '<span class="icon-motoboy" style="font-size: 14px;">c</span>',
@@ -196,8 +195,9 @@
             const text = messageInput.value.trim();
             if (!text) return;
             // 1. Inicia a animação: ícone troca de cor para a cor do botão (preto)
-            const originalColor = sendIcon.style.color || '#ffffff';
-            sendIcon.style.color = '#111111'; // cor do botão (preto)
+            const icon = sendButton.querySelector('.icon-motoboy');
+            const originalColor = icon.style.color || 'white';
+            icon.style.color = '#111111'; // cor do botão (preto)
             // Desabilita o botão durante a animação para evitar duplo envio
             sendButton.disabled = true;
             // 2. Depois de 0.3s, envia a mensagem e volta o ícone ao normal
@@ -213,7 +213,7 @@
        
                 messageInput.value = '';
                 // Reverte a cor do ícone
-                sendIcon.style.color = originalColor;
+                icon.style.color = originalColor;
          
                 renderMessages();
                 // O listener do input já cuida de desabilitar o botão
